@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>3D Smart Home Blueprint Designer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --dark: #1b263b;
+            --light: #f8f9fa;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --gray: #adb5bd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+    height: 100%;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--dark);
+}
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            padding: 25px 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .tagline {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-top: 5px;
+            font-weight: 300;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px 5%;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin: 20px auto;
+            max-width: 1400px;
+        }
+
+        .form-container {
+    flex: 1;
+    min-width: 400px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    max-width: 500px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-right: auto; /* ← Pushes form to the left */
+}
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .form-header i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+
+        .form-header h2 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .input-group input, 
+        .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--dark);
+        }
+
+        .input-group input:focus, 
+        .input-group select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            outline: none;
+        }
+
+        .input-group input:hover,
+        .input-group select:hover {
+            border-color: #ced4da;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            color: var(--gray);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(67, 97, 238, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .preview-container {
+            flex: 1;
+            min-width: 400px;
+            max-width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .preview-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .preview-header h2 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: #f1f3f5;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .view-toggle button {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0;
+            box-shadow: none;
+            width: auto;
+        }
+
+        .view-toggle button.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        #scene-container {
+            width: 100%;
+            height: calc(100% - 50px);
+            border-radius: 12px;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+
+        .view-label {
+            position: absolute;
+            top: 80px;
+            left: 30px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            z-index: 100;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .feature i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+
+        @media (max-width: 1100px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .form-container, 
+            .preview-container {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-container, 
+            .preview-container {
+                min-width: 100%;
+                padding: 20px;
+            }
+            
+            .input-group input, 
+            .input-group select {
+                padding: 12px 14px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-container, .preview-container {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .preview-container {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>3D Smart Home Blueprint Designer</h1>
+        <p class="tagline">Visualize your dream home in stunning 3D before construction begins</p>
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <i class="fas fa-home"></i>
+                <h2>Home Specifications</h2>
+            </div>
+            
+            <div class="input-group">
+                <label for="plotArea"><i class="fas fa-ruler-combined"></i> Plot Area (sq ft)</label>
+                <input id="plotArea" type="number" value="1600" min="500" max="5000" required />
+                <i class="fas fa-expand input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <label for="numBedrooms"><i class="fas fa-bed"></i> Number of Bedrooms</label>
+                <input id="numBedrooms" type="number" value="3" min="1" max="5" required />
+                <i class="fas fa-sliders-h input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <label for="direction"><i class="fas fa-compass"></i> Facing Direction</label>
+                <select id="direction">
+                    <option value="East">East</option>
+                    <option value="West">West</option>
+                    <option value="North">North</option>
+                    <option value="South">South</option>
+                </select>
+                <i class="fas fa-sun input-icon"></i>
+            </div>
+            
+            <div class="input-group">
+                <label for="viewType"><i class="fas fa-eye"></i> View Type</label>
+                <select id="viewType">
+                    <option value="3D">3D Perspective</option>
+                    <option value="2D">2D Floor Plan</option>
+                </select>
+                <i class="fas fa-cube input-icon"></i>
+            </div>
+            
+            <button onclick="generateHome()">
+                <i class="fas fa-magic"></i> Generate Blueprint
+            </button>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i> Real-time 3D rendering
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i> Customizable layouts
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i> Interactive controls
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-header">
+                <h2><i class="fas fa-cube"></i> Home Visualization</h2>
+                <div class="view-toggle">
+                    <button class="active" onclick="setViewType('3D')">3D</button>
+                    <button onclick="setViewType('2D')">2D</button>
+                </div>
+            </div>
+            <div id="scene-container">
+                <div class="view-label" id="view-label">3D Perspective View</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.min.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls;
+        let is3DView = true;
+        const roomHeight = 3;
+
+        function initScene() {
+            const container = document.getElementById('scene-container');
+            
+            // Clear previous scene if exists
+            if (renderer) {
+                container.removeChild(renderer.domElement);
+            }
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f8ff);
+
+            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(15, 25, 15);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            container.appendChild(renderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // Lighting setup
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight1.position.set(10, 20, 10);
+            directionalLight1.castShadow = true;
+            scene.add(directionalLight1);
+
+            const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight2.position.set(-10, 20, -10);
+            scene.add(directionalLight2);
+
+            const gridHelper = new THREE.GridHelper(30, 30, 0x888888, 0xcccccc);
+            scene.add(gridHelper);
+
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        function init2DView() {
+            const container = document.getElementById('scene-container');
+            
+            // Clear previous scene if exists
+            if (renderer) {
+                container.removeChild(renderer.domElement);
+            }
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f8ff);
+
+            // Orthographic camera for 2D view
+            const aspect = container.clientWidth / container.clientHeight;
+            camera = new THREE.OrthographicCamera(
+                -15 * aspect, 15 * aspect,
+                15, -15,
+                0.1, 1000
+            );
+            camera.position.set(0, 20, 0);
+            camera.lookAt(0, 0, 0);
+            camera.zoom = 0.8;
+            camera.updateProjectionMatrix();
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            container.appendChild(renderer.domElement);
+
+            // No controls for 2D view
+            if (controls) {
+                controls.dispose();
+                controls = null;
+            }
+
+            // Simple lighting for 2D
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+            scene.add(ambientLight);
+
+            const gridHelper = new THREE.GridHelper(30, 30, 0x888888, 0xcccccc);
+            scene.add(gridHelper);
+
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('scene-container');
+            if (is3DView) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+            } else {
+                const aspect = container.clientWidth / container.clientHeight;
+                camera.left = -15 * aspect;
+                camera.right = 15 * aspect;
+                camera.top = 15;
+                camera.bottom = -15;
+                camera.updateProjectionMatrix();
+            }
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (controls) controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function setViewType(type) {
+            document.getElementById('viewType').value = type;
+            generateHome();
+            
+            // Update toggle buttons
+            const buttons = document.querySelectorAll('.view-toggle button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (type === '3D') {
+                document.querySelector('.view-toggle button:first-child').classList.add('active');
+            } else {
+                document.querySelector('.view-toggle button:last-child').classList.add('active');
+            }
+        }
+
+        function generateHome() {
+            const viewType = document.getElementById('viewType').value;
+            is3DView = viewType === '3D';
+            document.getElementById('view-label').textContent = is3DView ? '3D Perspective View' : '2D Floor Plan View';
+            
+            if (is3DView) {
+                generate3DHome();
+            } else {
+                generate2DHome();
+            }
+        }
+
+        function generate3DHome() {
+            if (!scene) initScene();
+
+            // Clear existing rooms but keep lights and grid
+            const toRemove = [];
+            scene.children.forEach(child => {
+                if (!(child instanceof THREE.Light || child instanceof THREE.GridHelper)) {
+                    toRemove.push(child);
+                }
+            });
+            toRemove.forEach(obj => scene.remove(obj));
+
+            const numBedrooms = +document.getElementById("numBedrooms").value;
+            const direction = document.getElementById("direction").value;
+
+            const layout = generateLayout(numBedrooms, direction);
+            layout.forEach(room => {
+                create3DRoom(room);
+                addRoomLabel(room);
+            });
+
+            camera.position.set(15, 25, 15);
+            camera.lookAt(0, 0, 0);
+            if (controls) controls.update();
+        }
+
+        function generate2DHome() {
+            if (!scene) init2DView();
+
+            // Clear existing rooms but keep grid
+            const toRemove = [];
+            scene.children.forEach(child => {
+                if (!(child instanceof THREE.GridHelper)) {
+                    toRemove.push(child);
+                }
+            });
+            toRemove.forEach(obj => scene.remove(obj));
+
+            const numBedrooms = +document.getElementById("numBedrooms").value;
+            const direction = document.getElementById("direction").value;
+
+            const layout = generateLayout(numBedrooms, direction);
+            layout.forEach(room => {
+                create2DRoom(room);
+                addRoomLabel(room);
+            });
+
+            camera.position.set(0, 20, 0);
+            camera.lookAt(0, 0, 0);
+            camera.zoom = 0.8;
+            camera.updateProjectionMatrix();
+        }
+
+        function create3DRoom(room) {
+            const scale = 10;
+            const wallThickness = 0.2;
+
+            const roomWidth = room.w * scale;
+            const roomDepth = room.h * scale;
+            const posX = (room.x + room.w/2) * scale - 5;
+            const posZ = (room.y + room.h/2) * scale - 5;
+
+            const floorMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(getRoomColor(room.name)),
+                roughness: 0.3,
+                metalness: 0.2
+            });
+
+            const floor = new THREE.Mesh(
+                new THREE.BoxGeometry(roomWidth, 0.1, roomDepth),
+                floorMaterial
+            );
+            floor.position.set(posX, -0.05, posZ);
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            const wallMaterial = new THREE.MeshStandardMaterial({
+                color: 0xdddddd,
+                roughness: 0.5,
+                metalness: 0.1
+            });
+
+            const walls = [
+                { geom: new THREE.BoxGeometry(roomWidth, roomHeight, wallThickness), pos: [posX, roomHeight/2, posZ - roomDepth/2 - wallThickness/2] },
+                { geom: new THREE.BoxGeometry(roomWidth, roomHeight, wallThickness), pos: [posX, roomHeight/2, posZ + roomDepth/2 + wallThickness/2] },
+                { geom: new THREE.BoxGeometry(wallThickness, roomHeight, roomDepth + 2*wallThickness), pos: [posX - roomWidth/2 - wallThickness/2, roomHeight/2, posZ] },
+                { geom: new THREE.BoxGeometry(wallThickness, roomHeight, roomDepth + 2*wallThickness), pos: [posX + roomWidth/2 + wallThickness/2, roomHeight/2, posZ] }
+            ];
+
+            walls.forEach(wall => {
+                const wallMesh = new THREE.Mesh(wall.geom, wallMaterial);
+                wallMesh.position.set(...wall.pos);
+                wallMesh.castShadow = true;
+                wallMesh.receiveShadow = true;
+                scene.add(wallMesh);
+            });
+
+            const ceiling = new THREE.Mesh(
+                new THREE.BoxGeometry(roomWidth, 0.1, roomDepth),
+                new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.7 })
+            );
+            ceiling.position.set(posX, roomHeight + 0.05, posZ);
+            ceiling.receiveShadow = true;
+            scene.add(ceiling);
+        }
+
+        function create2DRoom(room) {
+            const scale = 10;
+            const posX = (room.x + room.w/2) * scale - 5;
+            const posZ = (room.y + room.h/2) * scale - 5;
+            const roomWidth = room.w * scale;
+            const roomDepth = room.h * scale;
+
+            const roomGeometry = new THREE.PlaneGeometry(roomWidth, roomDepth);
+            const roomMaterial = new THREE.MeshBasicMaterial({
+                color: new THREE.Color(getRoomColor(room.name)),
+                side: THREE.DoubleSide
+            });
+            const roomMesh = new THREE.Mesh(roomGeometry, roomMaterial);
+            roomMesh.rotation.x = -Math.PI / 2;
+            roomMesh.position.set(posX, 0, posZ);
+            scene.add(roomMesh);
+
+            // Add border
+            const borderGeometry = new THREE.EdgesGeometry(new THREE.BoxGeometry(roomWidth, 0.1, roomDepth));
+            const borderMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
+            const border = new THREE.LineSegments(borderGeometry, borderMaterial);
+            border.position.set(posX, 0.1, posZ);
+            scene.add(border);
+        }
+
+        function addRoomLabel(room) {
+            const scale = 10;
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 128;
+            const context = canvas.getContext('2d');
+
+            context.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.font = 'Bold 22px Arial';
+            context.fillStyle = '#333333';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(room.name, canvas.width/2, canvas.height/2);
+            context.strokeStyle = '#cccccc';
+            context.lineWidth = 2;
+            context.strokeRect(0, 0, canvas.width, canvas.height);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const material = new THREE.SpriteMaterial({ 
+                map: texture,
+                transparent: true,
+                opacity: 0.9
+            });
+            const sprite = new THREE.Sprite(material);
+            sprite.position.set(
+                (room.x + room.w/2) * scale - 5,
+                is3DView ? roomHeight + 1.5 : 0.2,
+                (room.y + room.h/2) * scale - 5
+            );
+            sprite.scale.set(3, 1.5, 1);
+            scene.add(sprite);
+        }
+
+        function getRoomColor(name) {
+            const colors = {
+                'Hall': 0xf5f5dc, 'Pooja Room': 0xfff8dc, 'Kitchen': 0xffe4b5,
+                'Bedroom 1': 0xe6e6fa, 'Bedroom 2': 0xd8bfd8, 'Bedroom 3': 0xdda0dd,
+                'Bedroom 4': 0xee82ee, 'Bedroom 5': 0xda70d6, 'Attached Bath': 0xb0e0e6,
+                'Common Bath': 0xafeeee, 'Utility': 0xd3d3d3, 'Dining': 0xf0e68c,
+                'Balcony': 0x98fb98
+            };
+            return colors[name] || 0xffffff;
+        }
+
+        function generateLayout(numBedrooms, direction) {
+            const layout = [];
+            const isEast = direction === "East";
+
+            layout.push({ name: "Hall", x: isEast ? 0 : 0.3, y: 0, w: 0.7, h: 0.25 });
+            layout.push({ name: "Pooja Room", x: isEast ? 0.7 : 0, y: 0, w: 0.3, h: 0.1 });
+            layout.push({ name: "Kitchen", x: isEast ? 0.7 : 0, y: 0.1, w: 0.3, h: 0.2 });
+            
+            layout.push({ name: "Bedroom 1", x: 0, y: 0.25, w: 0.5, h: 0.3 });
+            layout.push({ name: "Attached Bath", x: 0.5, y: 0.25, w: 0.2, h: 0.2 });
+
+            if (numBedrooms >= 2) layout.push({ name: "Bedroom 2", x: 0.7, y: 0.3, w: 0.3, h: 0.25 });
+            if (numBedrooms >= 3) layout.push({ name: "Bedroom 3", x: 0, y: 0.55, w: 0.4, h: 0.25 });
+            
+            if (numBedrooms >= 4) {
+                layout.push({ name: "Bedroom 4", x: 0.4, y: 0.55, w: 0.3, h: 0.25 });
+                layout.push({ name: "Common Bath", x: 0.7, y: 0.55, w: 0.2, h: 0.15 });
+            } else {
+                layout.push({ name: "Common Bath", x: 0.4, y: 0.55, w: 0.2, h: 0.15 });
+            }
+            
+            if (numBedrooms >= 5) {
+                layout.push({ name: "Bedroom 5", x: 0.7, y: 0.7, w: 0.3, h: 0.25 });
+                layout.push({ name: "Utility", x: 0.6, y: 0.55, w: 0.1, h: 0.15 });
+            } else {
+                layout.push({ name: "Utility", x: 0.6, y: 0.55, w: 0.4, h: 0.15 });
+            }
+            
+            if (numBedrooms <= 3) {
+                layout.push({ name: "Dining", x: 0, y: 0.8, w: 0.6, h: 0.2 });
+                layout.push({ name: "Balcony", x: 0.6, y: 0.7, w: 0.4, h: 0.3 });
+            } else {
+                layout.push({ name: "Dining", x: 0, y: 0.8, w: 0.5, h: 0.2 });
+                layout.push({ name: "Balcony", x: 0.5, y: 0.7, w: 0.5, h: 0.3 });
+            }
+
+            return layout;
+        }
+
+        // Initialize with 3D view
+        window.addEventListener('load', () => {
+            initScene();
+            generate3DHome();
+        });
+    </script>
+</body>
+</html>
